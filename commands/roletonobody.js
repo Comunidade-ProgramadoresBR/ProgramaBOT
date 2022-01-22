@@ -1,3 +1,4 @@
+const { Permissions } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -10,9 +11,13 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction) {
-        interaction.guild.members.cache.forEach(member => {
-            member.roles.remove(interaction.options.getRole('role').id)
-        })
-        interaction.reply({ content: 'Role removed from everyone' })
+        if (interaction.member.permissions.has(Permissions.STAGE_MODERATOR)) {
+            interaction.guild.members.cache.forEach(member => {
+                member.roles.remove(interaction.options.getRole('role').id)
+            })
+            interaction.reply({ content: 'Role removed from everyone' })
+        } else {
+            interaction.reply({ content: 'No Perms!' })
+        }
     }
 };
